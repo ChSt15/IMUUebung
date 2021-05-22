@@ -37,6 +37,13 @@ void IMUThread::readSensorData() {
 
 void IMUThread::publishData() {
 
+	if ((NOW()- lastPublishTimestamp) >= publishInterval){ //Damit die Funktion nicht blockiert so wie suspendCallUntil es tun wuerde
+		lastPublishTimestamp = NOW();
+
+		//Publish into sensorDataTransmitTopic
+		dataPacketTransmitTopic.publish(sensorData);
+
+	}
 
 
 }
@@ -44,8 +51,12 @@ void IMUThread::publishData() {
 
 void IMUThread::getTelecommandData() {
 
-
-
+		DataPacket datenPacket;
+		if (dataPacketTransmittBuffer.get(datenPacket)) {
+			if(datenPacket.packetID == 'P'){
+				publishInterval = datenPacket.packetData;
+			}
+		}
 }
 
 
