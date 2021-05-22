@@ -7,11 +7,16 @@
 #include "telemetry_control.h"
 
 
-
+//Accel/Gyro registers
 #define CTRL_REG1_G 0x10
+#define CTRL_REG6_XL 0x20
+//Mag registers
+#define CTRL_REG1_M 0x20
+#define CTRL_REG2_M 0x21
+#define CTRL_REG3_M 0x22
 
 
-
+//Telemetry commands from UART
 Fifo<DataPacket, 10> dataPacketBuffer;
 Subscriber dataPacketSubscriber(dataPacketReceivedTopic, dataPacketBuffer);
 
@@ -103,6 +108,9 @@ private:
 
 
 	bool sensorInitialised = false;
+
+
+	int64_t publishInterval = 1*SECONDS;
 
 
 };

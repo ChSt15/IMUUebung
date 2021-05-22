@@ -21,9 +21,9 @@ void IMUThread::initSensor() {
 	//Check if whoAmI reg is correct.
 	if (whoAmI != 0x68) return;
 
+	uint8_t data = 0x04;
 
-
-	writeByte()
+	writeByte(CTRL_REG1_G, data);
 
 }
 
