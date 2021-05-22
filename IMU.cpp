@@ -1,94 +1,84 @@
-#include "rodos.h"
-#include "hal_gpio.h"
-
-#include "telemetry_control.h"
+#include "IMU.h"
 
 
 
-HAL_GPIO red(GPIO_062);
-
-Topic<DataPacket> dataPacketTransmitTopic(-1, "Data Packet Transmit");
-Fifo<DataPacket, 10> dataPacketTransmittBuffer;
-Subscriber dataPacketTransmittSubscriber(dataPacketTransmitTopic, dataPacketTransmittBuffer);
 
 
-class Thread1:public Thread {
-private:
+
+void IMUThread::processData() {
 
 
-public:
 
-	void init() {
-		red.init(1,1,1);
-	}
-
-	void run() {
-
-		while (1) {
-
-			//Only check every
-			suspendCallerUntil(NOW() + interval*MILLISECONDS);
-
-			//Receive packet if new packet for Interval of thread 1
-			ThreadInterval time;
-			if (thread2IntervalBuffer.getOnlyIfNewData(time)) {
-
-				//So that we get the Interval of thread 1
-				if (time.threadID == 1) {
-					interval = time.interval;
-
-				}
-
-			}
-
-			//Receive packet if new packet for StepSize
-			float stepSizeBuf;
-			if (stepsizeBuffer.getOnlyIfNewData(stepSizeBuf)) {
-
-				stepSize = stepSizeBuf;
-
-			}
-
-			//Increment counter
-			counter += stepSize;
-
-			//Create and send command
-			DataPacket packet2;
-			packet2.packetID = 'A';
-			packet2.packetData = interval;
-
-			//Create and send command
-			DataPacket packet;
-			packet.packetID = 'S';
-			packet.packetData = stepSize;
-
-			DataPacket packet3;
-			packet3.packetID = 'C';
-			packet3.packetData = counter;
-
-			DataPacket packet4;
-			packet4.packetID = 'D';
-			packet4.packetData = NOW()/SECONDS;
-
-			dataPacketTransmitTopic.publish(packet);
-			dataPacketTransmitTopic.publish(packet2);
-			dataPacketTransmitTopic.publish(packet3);
-			dataPacketTransmitTopic.publish(packet4);
-
-			//toggle LED
-			red.setPins(!red.readPins());
-
-			//So that Thread does not suspend until forever when it is set to 0
-			if (interval == 0){
-				suspendCallerUntil(NOW() + 10000*MILLISECONDS);
-				interval = 3000;
-			}
-
-		}
-
-	}
-
-};
+}
 
 
-Thread1 thread1;
+void IMUThread::initSensor() {
+
+	uint8_t whoAmI;
+
+	readByte(0x0F, &whoAmI);
+
+	//Check if whoAmI reg is correct.
+	if (whoAmI != 0x68) return;
+
+
+
+	writeByte()
+
+}
+
+
+void IMUThread::readSensorData() {
+
+
+
+}
+
+
+void IMUThread::publishData() {
+
+
+
+}
+
+
+void IMUThread::getTelecommandData() {
+
+
+
+}
+
+
+//Functions for I2C communication
+void IMUThread::writeBytes(const uint8_t &reg, uint8_t* data, const uint8_t &numberBytes) {
+
+	bus.write(0x6B, &reg, 1);
+	bus.write(0x6B, data, numberBytes);
+
+}
+
+
+
+void IMUThread::readBytes(const uint8_t &reg, uint8_t* data, const uint8_t numberBytes) {
+
+	bus.write(0x6B, &reg, 1);
+	bus.read(0x6B, data, numberBytes);
+
+}
+
+
+void IMUThread::writeBytesMag(const uint8_t &reg, uint8_t* data, const uint8_t &numberBytes) {
+
+	bus.write(0x1E, &reg, 1);
+	bus.write(0x1E, data, numberBytes);
+
+}
+
+
+
+void IMUThread::readBytesMag(const uint8_t &reg, uint8_t* data, const uint8_t numberBytes) {
+
+	bus.write(0x1E, &reg, 1);
+	bus.read(0x1E, data, numberBytes);
+
+}

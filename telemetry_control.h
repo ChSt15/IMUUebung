@@ -27,7 +27,7 @@ struct SensorData{
 
 	//Raw sensor values
 	Vector gyro; // radian/sec
-	Vector accel; // m/s^2
+	Vector accel; // m/s/s
 	Vector mag; // Gauss
 
 	//Integration of gyro values. Relative to start attitude.
@@ -42,7 +42,7 @@ struct SensorData{
 	//Euler. X-Roll, Y-Pitch, Z-Yaw/heading
 	Vector euler;
 
-	//Temperature in °C
+	//Temperature in �C
 	float temp;
 
 };
@@ -69,6 +69,13 @@ public:
 	}
 
 	void run() {
+		//Starting values for the variables
+		float a = 0.0;
+		float b = 0.0;
+		float s = 0.0;
+		float c = 0.0;
+		float d = 0.0;
+
 		Vector vec;
 
 		while (1) {
@@ -77,39 +84,16 @@ public:
 
 
 			SensorData packet;
+			//if (dataPacketTransmittBuffer.getOnlyIfNewData(packet)) {
 			if (sensorDataTransmittBuffer.get(packet)) {
 
-				//Gyroscope:
-				float gx = packet.gyro.x * (180/PI);
-				float gy = packet.gyro.y * (180/PI);
-				float gz = packet.gyro.z * (180/PI);
-				float pitch = packet.gyroPosition.x * (180/PI);
-				float roll = packet.gyroPosition.y * (180/PI);
-				float yaw = packet.gyroPosition.z * (180/PI);
 
-				PRINTF("Gyroscope is successfully read\ngx[deg/s] = %.4f , gy[deg/s] = %.4f , gz[deg/s] = %.4f\nThe Pitch = %.4fdeg\nThe Roll = %.4fdeg\n, The Yaw = %.4fdeg\nThe Temperature is = %.4f°C\n----------------------------------\n", gx, gy, gz, pitch, roll, yaw, packet.temp);
+				PRINTF("Counter = %.2f, StepSize = %.2f, ActualRunningTime[s] = %.2f, Thread1 t1 = %.0f, Thread2 t2 = %.0f\n", c, s, d, a, b);
 
 
-				//Magnetometer
-				float pitch_acc = packet.pitch_acc * (180/PI);
-				float roll_acc = packet.roll_acc * (180/PI);
-				float mx = packet.mag.x;
-				float my = packet.mag.y;
-				float mz = packet.mag.z;
-				float angleMag = packet.heading_mag * (180/PI);
-
-				PRINTF("Orientation Angle of Accelerometer is pitch_acc[deg] = %.4f and roll_acc[deg] = %.4f\nmx[Gauss] = %.4f, my[Gauss] = %.4f, mz[Gauss] = %.4f\nOrientation angle of Magnetometer is %.4fdeg\n Accelerometer is successfully read\n----------------------------------------------\n", pitch_acc, roll_acc, mx, my, mz, angleMag);
-
-
-				//Accelerometer
-				float pitch_acc = packet.pitch_acc * (180/PI);
-				float roll_acc = packet.roll_acc * (180/PI);
-				float ax = packet.accel.x;
-				float ay = packet.accel.y;
-				float az = packet.accel.z;
-				PRINTF("Orientation Angle of Accelerometer is pitch_acc[deg] = %.4f and roll_acc[deg] = %.4f\nAccelerometer is successfully read\nax[m/s^2] = %.4f, ay[m/s^2] = %.4f, az[m/s^2] = %.4f\n-------------------------------------\n", pitch_acc, roll_acc, ax, ay, az);
-
+				//PRINTF("package ID = %c, data = %f \n", packet.packetID, packet.packetData);
 			}
+
 
 		}
 
@@ -187,4 +171,7 @@ public:
 	}
 
 };
+
+
+
 
