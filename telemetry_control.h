@@ -62,38 +62,50 @@ public:
 		float c = 0.0;
 		float d = 0.0;
 
+		Vector vec;
+
 		while (1) {
 
 			suspendCallerUntil(NOW() + 100*MILLISECONDS);
-			//for (int var = 0; var < 5; ++var) {
-				DataPacket packet;
-				//if (dataPacketTransmittBuffer.getOnlyIfNewData(packet)) {
-				if (dataPacketTransmittBuffer.get(packet)) {
-
-					//Send new packet
-					if (packet.packetID == 'S'){
-						s = packet.packetData;
-					}
-					if (packet.packetID =='A'){
-						a = packet.packetData;
-					}
-					if (packet.packetID =='B'){
-						b = packet.packetData;
-					}
-					if (packet.packetID =='C'){
-						c = packet.packetData;
-					}
-					if (packet.packetID =='D'){
-						d = packet.packetData;
-					}
-
-					PRINTF("Counter = %.2f, StepSize = %.2f, ActualRunningTime[s] = %.2f, Thread1 t1 = %.0f, Thread2 t2 = %.0f\n", c, s, d, a, b);
 
 
-					//PRINTF("package ID = %c, data = %f \n", packet.packetID, packet.packetData);
+			SensorData packet;
+			//if (dataPacketTransmittBuffer.getOnlyIfNewData(packet)) {
+			if (sensorDataTransmittBuffer.get(packet)) {
+
+
+				PRINTF("Counter = %.2f, StepSize = %.2f, ActualRunningTime[s] = %.2f, Thread1 t1 = %.0f, Thread2 t2 = %.0f\n", c, s, d, a, b);
+
+
+				//PRINTF("package ID = %c, data = %f \n", packet.packetID, packet.packetData);
+			}
+
+
+
+			DataPacket packet;
+			//if (dataPacketTransmittBuffer.getOnlyIfNewData(packet)) {
+			if (dataPacketTransmittBuffer.get(packet)) {
+
+				//Send new packet
+				if (packet.packetID == 'S'){
+					s = packet.packetData;
 				}
-			//}
-			//PRINTF("Counter = %.2f, StepSize = %.2f, ActualRunningTime[s] = %.2f, Thread1 t1 = %.2f, Thread2 t2 = %.2f\n", c, s, d, a, b);
+				if (packet.packetID =='A'){
+					a = packet.packetData;
+				}
+				if (packet.packetID =='B'){
+					b = packet.packetData;
+				}
+				if (packet.packetID =='C'){
+					c = packet.packetData;
+				}
+				if (packet.packetID =='D'){
+					d = packet.packetData;
+				}
+
+				PRINTF("Counter = %.2f, StepSize = %.2f, ActualRunningTime[s] = %.2f, Thread1 t1 = %.0f, Thread2 t2 = %.0f\n", c, s, d, a, b);
+
+			}
 
 		}
 

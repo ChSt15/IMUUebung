@@ -3,8 +3,8 @@
 
 
 
-#include ".objects/vector_math.h"
-#include ".objects/quaternion_math.h"
+#include "objects/vector_math.h"
+#include "objects/quaternion_math.h"
 
 
 

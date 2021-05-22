@@ -1,27 +1,21 @@
 #include "rodos.h"
 #include "hal_gpio.h"
 
-#include "packet_handler.h"
+#include "telemetry_control.h"
 
 
 
 HAL_GPIO red(GPIO_062);
 
-//The 2 Buffers needed for Interval and StepSize
-CommBuffer<ThreadInterval> thread2IntervalBuffer;
-Subscriber thread2IntervalSubscriber(threadIntervalCommandTopic, thread2IntervalBuffer);
-
-CommBuffer<float> stepsizeBuffer;
-Subscriber stepsizeSubscriber(stepSizeCommandTopic, stepsizeBuffer);
+Topic<DataPacket> dataPacketTransmitTopic(-1, "Data Packet Transmit");
+Fifo<DataPacket, 10> dataPacketTransmittBuffer;
+Subscriber dataPacketTransmittSubscriber(dataPacketTransmitTopic, dataPacketTransmittBuffer);
 
 
 class Thread1:public Thread {
 private:
 
-	float counter = 0;
-	float stepSize = 1;
 
-	uint32_t interval = 3000;
 public:
 
 	void init() {
