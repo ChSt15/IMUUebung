@@ -25,10 +25,24 @@ struct DataPacket{
 
 struct SensorData{
 
-	Vector angularVel;
-	Vector angularPos;
-	Vector linearAccel;
+	//Raw sensor values
+	Vector gyro; // radian/sec
+	Vector accel; // m/s/s
+	Vector mag; // Gauss
 
+	//Integration of gyro values. Relative to start attitude.
+	Vector gyroPosition;
+
+	//Acceleration angles in radian.
+	float roll_acc, pitch_acc;
+
+	//Heading from magnetometer in radian from north-east-positive 0 to 2*PI.
+	float heading_mag;
+
+	//Euler. X-Roll, Y-Pitch, Z-Yaw/heading
+	Vector euler;
+
+	//Temperature in °C
 	float temp;
 
 };
