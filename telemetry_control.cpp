@@ -4,9 +4,12 @@
 Topic<DataPacket> dataPacketReceivedTopic(-1, "Data Packet Received");
 
 Topic<DataPacket> dataPacketTransmitTopic(-1, "Data Packet Transmit");
-//CommBuffer<DataPacket> dataPacketTransmittBuffer;
 Fifo<DataPacket, 10> dataPacketTransmittBuffer;
 Subscriber dataPacketTransmittSubscriber(dataPacketTransmitTopic, dataPacketTransmittBuffer);
+
+Topic<SensorData> sensorDataTransmitTopic(-1, "SensorData transmit");
+Fifo<SensorData, 10> sensorDataTransmittBuffer;
+Subscriber sensorTransmittSubscriber(sensorDataTransmitTopic, sensorDataTransmittBuffer);
 
 
 TelemetryReceiver telemetryReceiver;

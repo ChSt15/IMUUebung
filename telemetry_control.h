@@ -6,10 +6,15 @@
 #include "hal.h"
 #include "stdio.h"
 
+#include "3d_math.h"
+
 
 
 namespace RODOS {extern HAL_UART uart_stdout;}
 #define TeleURAT uart_stdout
+
+
+
 
 
 struct DataPacket{
@@ -18,11 +23,24 @@ struct DataPacket{
 };
 
 
+struct SensorData{
+
+	Vector angularVel;
+	Vector angularPos;
+	Vector linearAccel;
+
+	float temp;
+
+};
+
+
 extern Topic<DataPacket> dataPacketReceivedTopic;
 
 extern Topic<DataPacket> dataPacketTransmitTopic;
-//extern CommBuffer<DataPacket> dataPacketTransmittBuffer;
 extern Fifo<DataPacket, 10> dataPacketTransmittBuffer;
+
+extern Topic<SensorData> sensorDataTransmitTopic;
+extern Fifo<SensorData, 10> sensorDataTransmittBuffer;
 
 
 
@@ -154,62 +172,6 @@ public:
 
 };
 
-	/*bool updatePacket(char byte) {
-
-		if (numberBytes == 0) {
-
-			if (byte == '$') {
-				startTimestamp = NOW();
-				packet[numberBytes] = byte;
-				numberBytes++;
-				return false;
-			}
-
-		} else {
-
-			if (numberBytes == 19) {
-
-				numberBytes = 0;
-				return false;
-
-			} else if (byte == '#') {
-
-				packet[numberBytes] = byte;
-				packetSize = numberBytes+1;
-				numberBytes = 0;
-				startTimestamp = 0;
-				return true;
-
-			} else {
-
-				packet[numberBytes] = byte;
-				numberBytes++;
-				return false;
-
-			}
-
-		}
-
-		return false;
-
-	}
-
-
-	bool unpackPacket(char* buffer, uint8_t size, float* number, char* messageType) {
-
-		if (buffer[0] != '$') return false;
-
-		*messageType = buffer[1];
-
-		sscanf(buffer+2, "%f", number);
-
-		for (uint8_t i = 0; i < size; i++) {
-			if (buffer[i] == '#') return true;
-		}
-
-		return false;
-
-	}*/
 
 
 
