@@ -21,9 +21,9 @@ void IMUThread::initSensor() {
 	//Check if whoAmI reg is correct.
 	if (whoAmI != 0x68) return;
 
-	uint8_t data = 0x04;
+	//uint8_t data = ;
 
-	writeByte(CTRL_REG1_G, data);
+	//writeByte(CTRL_REG1_G, data);
 
 }
 
@@ -37,13 +37,6 @@ void IMUThread::readSensorData() {
 
 void IMUThread::publishData() {
 
-	if ((NOW()- lastPublishTimestamp) >= publishInterval){ //Damit die Funktion nicht blockiert so wie suspendCallUntil es tun wuerde
-		lastPublishTimestamp = NOW();
-
-		//Publish into sensorDataTransmitTopic
-		dataPacketTransmitTopic.publish(sensorData);
-
-	}
 
 
 }
@@ -51,12 +44,8 @@ void IMUThread::publishData() {
 
 void IMUThread::getTelecommandData() {
 
-		DataPacket datenPacket;
-		if (dataPacketTransmittBuffer.get(datenPacket)) {
-			if(datenPacket.packetID == 'P'){
-				publishInterval = datenPacket.packetData;
-			}
-		}
+
+
 }
 
 
