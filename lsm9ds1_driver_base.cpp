@@ -9,17 +9,17 @@ bool LSM9DS1_Driver_Base::readGyroscope(float &x, float &y, float &z) {
 
     bool dataIsNew = gyroscopeAvailable();
 
-    int8_t dataBuffer[6];
+    uint8_t dataBuffer[6];
 
-    readBytesAG(LSM9DS1::OUT_GYRO_REG_START, (uint8_t*)dataBuffer, 6);
+    readBytesAG(LSM9DS1::OUT_GYRO_REG_START, dataBuffer, 6);
 
     int16_t xBuf = static_cast<int16_t>(dataBuffer[1])<<8 | dataBuffer[0];
     int16_t yBuf = static_cast<int16_t>(dataBuffer[3])<<8 | dataBuffer[2];
     int16_t zBuf = static_cast<int16_t>(dataBuffer[5])<<8 | dataBuffer[4];
 
-    x = float(xBuf)*0.07f*3.14159265f/180.0f*2;
-    y = float(yBuf)*0.07f*3.14159265f/180.0f*2;
-    z = float(zBuf)*0.07f*3.14159265f/180.0f*2;
+    x = float(xBuf)*0.07f*3.14159265f/180.0f;
+    y = float(yBuf)*0.07f*3.14159265f/180.0f;
+    z = float(zBuf)*0.07f*3.14159265f/180.0f;
 
     return dataIsNew;
 
@@ -34,9 +34,13 @@ bool LSM9DS1_Driver_Base::readAccelerometer(float &x, float &y, float &z) {
 
     readBytesAG(LSM9DS1::OUT_ACCEL_REG_START, dataBuffer, 6);
 
-    x = -9.81*static_cast<float>(int16_t(dataBuffer[1])<<8 | int16_t(dataBuffer[0]))*0.061f*0.001;
-    y = -9.81*static_cast<float>(int16_t(dataBuffer[3])<<8 | int16_t(dataBuffer[2]))*0.061f*0.001;
-    z = -9.81*static_cast<float>(int16_t(dataBuffer[5])<<8 | int16_t(dataBuffer[4]))*0.061f*0.001;
+    int16_t xBuf = static_cast<int16_t>(dataBuffer[1])<<8 | dataBuffer[0];
+	int16_t yBuf = static_cast<int16_t>(dataBuffer[3])<<8 | dataBuffer[2];
+	int16_t zBuf = static_cast<int16_t>(dataBuffer[5])<<8 | dataBuffer[4];
+
+    x = -9.81*static_cast<float>(xBuf)*0.061f*0.001;
+    y = -9.81*static_cast<float>(yBuf)*0.061f*0.001;
+    z = -9.81*static_cast<float>(zBuf)*0.061f*0.001;
 
     return dataIsNew;
 
@@ -51,9 +55,13 @@ bool LSM9DS1_Driver_Base::readMagnetometer(float &x, float &y, float &z) {
 
     readBytesM(LSM9DS1::OUT_MAG_REG_START, dataBuffer, 6);
 
-    x = static_cast<float>(int16_t(dataBuffer[1])<<8 | int16_t(dataBuffer[0]))*0.14f*0.001;
-    y = static_cast<float>(int16_t(dataBuffer[3])<<8 | int16_t(dataBuffer[2]))*0.14f*0.001;
-    z = static_cast<float>(int16_t(dataBuffer[5])<<8 | int16_t(dataBuffer[4]))*0.14f*0.001;
+    int16_t xBuf = static_cast<int16_t>(dataBuffer[1])<<8 | dataBuffer[0];
+	int16_t yBuf = static_cast<int16_t>(dataBuffer[3])<<8 | dataBuffer[2];
+	int16_t zBuf = static_cast<int16_t>(dataBuffer[5])<<8 | dataBuffer[4];
+
+    x = -static_cast<float>(xBuf)*0.14f*0.001;
+    y = static_cast<float>(yBuf)*0.14f*0.001;
+    z = -static_cast<float>(zBuf)*0.14f*0.001;
 
     return dataIsNew;
 
@@ -69,7 +77,7 @@ bool LSM9DS1_Driver_Base::readTemperature(float &temp) {
     readBytesAG(LSM9DS1::OUT_TEMP_REG_START, (uint8_t*)dataBuffer, 2);
 
     int16_t tempBuf = dataBuffer[0] + static_cast<int16_t>(dataBuffer[1])<<8;
-    temp = float(tempBuf)/16.0f + 25.0f;
+    temp = -float(tempBuf)/16.0f/100.0f + 25.0f;
 
     return dataIsNew;
 

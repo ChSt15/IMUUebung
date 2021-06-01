@@ -47,6 +47,12 @@ public:
 
 			if (magInitialised && accelGyroInitialised) {
 
+				if (!calibrated) {
+
+					calibrateSensor();
+
+				}
+
 				getTelecommandData();
 
 				getSensorData();
@@ -68,6 +74,8 @@ public:
 
 	void getSensorData();
 
+	void calibrateSensor();
+
 	void publishData();
 
 	void getTelecommandData();
@@ -78,6 +86,12 @@ private:
 	Vector gyro;
 	Vector accel;
 	Vector mag;
+
+	//Calibration values
+	Vector gyroOffset = 0;
+	Vector accelOffset = 0;
+	Vector magMin = 90000;
+	Vector magMax = -90000;
 
 	float temp;
 
@@ -98,6 +112,8 @@ private:
 
 
 	int64_t  lastPublishTimestamp = 0;
+
+	bool calibrated = false;
 
 
 };
