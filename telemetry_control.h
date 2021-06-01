@@ -71,7 +71,7 @@ public:
 	void run() {
 		Vector vec;
 		int interval = 100; //ms
-		char wasDrucken = 'A'; //Was soll gedruckt werden
+		char wasDrucken = 'G'; //Was soll gedruckt werden
 
 		while (1) {
 
@@ -99,9 +99,9 @@ public:
 				float gx = packet.gyro.x * (180/PI);
 				float gy = packet.gyro.y * (180/PI);
 				float gz = packet.gyro.z * (180/PI);
-				float pitch = packet.gyroPosition.x * (180/PI);
-				float roll = packet.gyroPosition.y * (180/PI);
-				float yaw = packet.gyroPosition.z * (180/PI);
+				float pitch = packet.euler.x * (180/PI);
+				float roll = packet.euler.y * (180/PI);
+				float yaw = packet.euler.z * (180/PI);
 
 				PRINTF("Gyroscope is successfully read\ngx[deg/s] = %.4f , gy[deg/s] = %.4f , gz[deg/s] = %.4f\nThe Pitch = %.4fdeg\nThe Roll = %.4fdeg\n, The Yaw = %.4fdeg\nThe Temperature is = %.4f°C\n----------------------------------\n", gx, gy, gz, pitch, roll, yaw, packet.temp);
 				}
