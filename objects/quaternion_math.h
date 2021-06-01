@@ -4,10 +4,6 @@
 
 #include "math.h"
 
-#include "WString.h"
-
-#include "vector_math.h"
-
 
 
 #ifndef PI
@@ -213,9 +209,6 @@ class Quaternion {
          * @param values digits.
          * @return String.
          */
-        String toString(const uint8_t &digits = 2) {
-            return "w: " + String(w, digits) + ", x: " + String(x, digits) + ", y: " + String(y, digits) + ", z: " + String(z, digits);  
-        }
 
         Quaternion operator + (const Quaternion &b) {
             return Quaternion(w + b.w, x + b.x, y + b.y, z + b.z);

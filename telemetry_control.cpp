@@ -12,6 +12,6 @@ Fifo<SensorData, 10> sensorDataTransmittBuffer;
 Subscriber sensorTransmittSubscriber(sensorDataTransmitTopic, sensorDataTransmittBuffer);
 
 
-//TelemetryReceiver telemetryReceiver;
+TelemetryReceiver telemetryReceiver;
 
-//TelemetryTransmitter telemetryTransmitter;
+TelemetryTransmitter telemetryTransmitter;

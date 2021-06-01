@@ -6,19 +6,16 @@
 
 #include "telemetry_control.h"
 
-
-//Accel/Gyro registers
-#define CTRL_REG1_G 0x10
-#define CTRL_REG6_XL 0x20
-//Mag registers
-#define CTRL_REG1_M 0x20
-#define CTRL_REG2_M 0x21
-#define CTRL_REG3_M 0x22
+#include "lsm9ds1_driver_rodos_i2c.h"
 
 
 //Telemetry commands from UART
 Fifo<DataPacket, 10> dataPacketBuffer;
 Subscriber dataPacketSubscriber(dataPacketReceivedTopic, dataPacketBuffer);
+
+extern HAL_I2C bus;
+extern LSM9DS1_Driver_RodosI2C imu;
+
 
 class IMUThread:public Thread {
 private:
@@ -27,24 +24,36 @@ private:
 public:
 
 	void init() {
+
 		bus.init(400000);
+
 	}
 
 	void run() {
 
 		while (1) {
 
-			if (!sensorInitialised) {
+			suspendCallerUntil(NOW() + 1*MILLISECONDS);
 
-				initSensor();
+			if (!accelGyroInitialised && NOW() - lastAccelGyroInit >= 1*SECONDS) {
+				lastAccelGyroInit = NOW();
+				accelGyroInitialised = imu.initialiseAG();
+			}
 
-			} else {
+			if (!magInitialised && NOW() - lastMagInit >= 1*SECONDS) {
+				lastMagInit = NOW();
+				magInitialised = imu.initialiseM();
+			}
+
+			if (magInitialised && accelGyroInitialised) {
 
 				getTelecommandData();
 
-				readSensorData();
+				getSensorData();
 
 				processData();
+
+				publishData();
 
 
 			}
@@ -57,44 +66,13 @@ public:
 	//Main sensor control functions
 	void processData();
 
-	void initSensor();
-
-	void readSensorData();
+	void getSensorData();
 
 	void publishData();
 
 	void getTelecommandData();
 
-	//Gyro and accel Sensor communication functions.
-	void writeByte(const uint8_t &reg, uint8_t data) {
-		writeBytes(reg, &data, 1);
-	}
-
-	void writeBytes(const uint8_t &reg, uint8_t* data, const uint8_t &numberBytes);
-
-	void readByte(const uint8_t &reg, uint8_t* data) {
-		readBytes(reg, data, 1);
-	}
-
-	void readBytes(const uint8_t &reg, uint8_t* data, const uint8_t numberBytes);
-
-	//Magnetometer communication functions.
-	void writeByteMag(const uint8_t &reg, uint8_t data) {
-		writeBytesMag(reg, &data, 1);
-	}
-
-	void writeBytesMag(const uint8_t &reg, uint8_t* data, const uint8_t &numberBytes);
-
-	void readByteMag(const uint8_t &reg, uint8_t* data) {
-		readBytesMag(reg, data, 1);
-	}
-
-	void readBytesMag(const uint8_t &reg, uint8_t* data, const uint8_t numberBytes);
-
 private:
-
-	//I2C Bus to communicate with sensor
-	HAL_I2C bus = HAL_I2C(I2C_IDX2);
 
 	//Raw sensor values
 	Vector gyro;
@@ -107,16 +85,19 @@ private:
 	SensorData sensorData;
 
 
-	bool sensorInitialised = false;
+	bool accelGyroInitialised = false;
+	bool magInitialised = false;
+
+	int64_t lastAccelGyroInit = 0;
+	int64_t lastMagInit = 0;
+
+	int64_t lastSensorProcessTimestamp = 0;
 
 
-	int64_t publishInterval = 1*SECONDS;
+	int64_t publishInterval = 100*MILLISECONDS;
 
 
 	int64_t  lastPublishTimestamp = 0;
 
 
 };
-
-
-IMUThread imuThread;

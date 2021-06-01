@@ -4,8 +4,6 @@
 
 #include "math.h"
 
-#include "WString.h"
-
 
 #ifndef PI
 #define PI 3.1415926541f
@@ -291,11 +289,6 @@ class Vector {
          * @param values digits.
          * @return String.
          */
-        String toString(uint8_t digits = 2) {
-            return "x: " + String(x, digits) + ", y: " + String(y, digits) + ", z: " + String(z, digits);  
-        }
-
-
 };
 
 
