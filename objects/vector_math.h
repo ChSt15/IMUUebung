@@ -173,6 +173,10 @@ class Vector {
             return Vector(x/c, y/c, z/c);
         }
 
+        Vector operator / (Vector c) {
+			return Vector(x/c.x, y/c.y, z/c.z);
+		}
+
         /**
          * Compound scaling.
          *

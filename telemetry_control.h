@@ -53,6 +53,9 @@ extern Topic<DataPacket> dataPacketReceivedTopic;
 extern Topic<DataPacket> dataPacketTransmitTopic;
 extern Fifo<DataPacket, 10> dataPacketTransmittBuffer;
 
+extern Topic<DataPacket> dataPacketReceiveTopic;
+extern Fifo<DataPacket, 10> dataPacketReceiveBuffer;
+
 extern Topic<SensorData> sensorDataTransmitTopic;
 extern Fifo<SensorData, 10> sensorDataTransmittBuffer;
 
@@ -71,21 +74,22 @@ public:
 	void run() {
 		Vector vec;
 		int interval = 100; //ms
-		char wasDrucken = 'G'; //Was soll gedruckt werden
+		char wasDrucken = 'A'; //Was soll gedruckt werden
 
 		while (1) {
 
 			//Update Interval (Eigentlich Thread 3)
 			DataPacket datenPacket;
-			if (dataPacketTransmittBuffer.get(datenPacket)) {
+			if (dataPacketReceiveBuffer.get(datenPacket)) {
+				PRINTF("ID: %c", datenPacket.packetID);
 				if(datenPacket.packetID == 'I'){
-					interval = datenPacket.packetData;
+					interval = datenPacket.packetID;
 				} else if(datenPacket.packetID == 'A'){
-					wasDrucken = datenPacket.packetData;
+					wasDrucken = datenPacket.packetID;
 				} else if(datenPacket.packetID == 'M'){
-					wasDrucken = datenPacket.packetData;
+					wasDrucken = datenPacket.packetID;
 				} else if(datenPacket.packetID == 'G'){
-					wasDrucken = datenPacket.packetData;
+					wasDrucken = datenPacket.packetID;
 				}
 			}
 
